@@ -18,7 +18,7 @@ class CameraScreen extends Component{
     this.setState({hasPermission: status === 'granted'});
   }
 
-  sendToServer = async (data) => {
+  getSendToServer = async (data) => {
       // Get these from AsyncStorage
       const token = await AsyncStorage.getItem('@session_token');
 
@@ -28,7 +28,7 @@ class CameraScreen extends Component{
       let blob = await res.blob();
 
       return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
-          method: "POST",
+          method: "post",
           headers: {
               "Content-Type": "image/png",
               "X-Authorization": token
@@ -48,7 +48,7 @@ class CameraScreen extends Component{
             const options = {
                 quality: 0.5, 
                 base64: true,
-                onPictureSaved: (data) => this.sendToServer(data)
+                onPictureSaved: (data) => this.getSendToServer(data)
             };
             await this.camera.takePictureAsync(options); 
         } 

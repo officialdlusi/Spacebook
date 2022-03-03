@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, FlatList, Button, TextInput} from 'react-native';
+import {View, Text, FlatList, Button, TextInput, StyleSheet, Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { ActivityIndicator } from 'react-native-paper';
 
@@ -10,7 +10,8 @@ class ProfileScreen extends Component {
 
     this.state = {
       isLoading: true,
-      profile: {}
+      profile: {},
+      photo: null
     }
   }
 
@@ -24,19 +25,24 @@ class ProfileScreen extends Component {
   componentDidMount() {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
     this.getProfile();
-    this.get_profile_image();
+    this.getProfileImage();
     });
 
   this.getProfile();
-  this.get_profile_image();
+  this.getProfileImage();
 }
 
-  // checkLoggedIn = async () => {
-  //   const value = await AsyncStorage.getItem('@session_token');
-  //   if (value == null) {
-  //       this.props.navigation.navigate('Login');
-  //   }
-  // };
+  componentWillUnmount(){
+    this.getProfile();
+    this.getProfileImage();
+  }
+
+  checkLoggedIn = async () => {
+    const value = await AsyncStorage.getItem('@session_token');
+    if (value == null) {
+        this.props.navigation.navigate('Login');
+    }
+  };
 
 
 
@@ -73,7 +79,7 @@ class ProfileScreen extends Component {
         .catch((error) => {
             console.log(error);
         })
-  }
+      }
 
   getAddPost = async (id) => {
     const value = await AsyncStorage.getItem('@session_token');
@@ -108,14 +114,14 @@ class ProfileScreen extends Component {
     })
   }
 
-  get_profile_image = async (id) => {
-    const valuetoke = await AsyncStorage.getItem('@session_token');
+  getProfileImage = async () => {
+    const token = await AsyncStorage.getItem('@session_token');
 
-    const valueid  = await AsyncStorage.getItem('@session_id');
+    const id  = await AsyncStorage.getItem('@session_id');
     fetch("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
       method: 'get',
       headers: {
-        'X-Authorization': valuetoke
+        'X-Authorization': token
       }
     })
     .then((res) => {
@@ -141,19 +147,35 @@ class ProfileScreen extends Component {
       return(<ActivityIndicator/>);
         } else {
       return (
-      <View>
+        <View style={styles.container}>
+          <Image
+            source={{
+              uri: this.state.photo,
+            }}
+            style={{
+              width: 400,
+              height: 400,
+              borderWidth: 5 
+            }}
+          />
         <Text>{profile.first_name + ' '}{profile.last_name}</Text>
         <TextInput placeholder="Write a post here..."/>
         <Button title = "Post" onPress={() => this.getAddPost()}/>
         <Button title = "Delete" onPress={() => this.getDeletePost}/>
         <Button title = "Update Profile Picture" onPress={() => this.props.navigation.navigate("Camera")}/>
       </View>
-
+      
       )}
-    }
-  }
+          }
+        }
 
+export default ProfileScreen;  
 
-
-
-export default ProfileScreen;
+ const styles = StyleSheet.create({
+    container: {
+      flex: 1,
+      backgroundColor: '#fff',
+      alignItems: 'center',
+      justifyContent: 'center',
+    },
+  });
