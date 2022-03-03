@@ -16,21 +16,21 @@ class Main extends Component{
     return (
         <Tab.Navigator
           screenOptions = {({route}) => ({
+            tabBarLabel: "",
             tabBarIcon: ({focused, color, size}) => {
               let iconName;
 
-            if (route.name === 'HomeScreen'){
-              iconName = focused ? 'home' : 'planet-outline';
-            } else if(route.name === 'ProfileScreen') {
-              iconName = focused ? 'profile' : 'person-outline';
+            if(route.name === 'ProfileScreen') {
+              iconName = focused ? 'person-outline' : 'person-outline';
             } else if(route.name === 'SearchScreen') {
-              iconName = focused ? 'profile' : 'search-outline';
+              iconName = focused ? 'search-outline' : 'search-outline';
             } else if(route.name === 'FriendsScreen'){
-              iconName = focused ? 'friends' : 'people-outline';
-            } else if(route.name === 'FriendRequestScreen'){
-              iconName = focused ? 'Requests' : 'person-add-outline';
+              iconName = focused ? 'people-outline' : 'people-outline';
+            } else if(route.name === 'FriendRequestsScreen'){
+              iconName = focused ? 'person-add-outline' : 'person-add-outline';
+            } else if(route.name === 'LogoutScreen') {
+              iconName = focused ? 'log-out-outline' : 'log-out-outline';
             }
-
             return <Ionicons name = {iconName} size = {size} color = {color} />;
             },
           })}
@@ -39,11 +39,11 @@ class Main extends Component{
             inactiveTintColor: 'grey',
           }}
         >
-          <Tab.Screen name = "Profile" component = {ProfileScreen} />
-          <Tab.Screen name = "Search" component = {SearchScreen}/>
-          <Tab.Screen name = "Friends" component = {FriendsScreen}/>
-          <Tab.Screen name = "FriendRequests" component = {FriendRequestsScreen}/>
-          <Tab.Screen name = "Logout" component = {LogoutScreen}/>
+          <Tab.Screen name = "ProfileScreen" component = {ProfileScreen} />
+          <Tab.Screen name = "SearchScreen" component = {SearchScreen}/>
+          <Tab.Screen name = "FriendsScreen" component = {FriendsScreen}/>
+          <Tab.Screen name = "FriendRequestsScreen" component = {FriendRequestsScreen}/>
+          <Tab.Screen name = "LogoutScreen" component = {LogoutScreen}/>
         </Tab.Navigator>
     )
   }
