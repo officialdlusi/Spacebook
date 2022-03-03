@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 class CameraScreen extends Component{
   constructor(props){
