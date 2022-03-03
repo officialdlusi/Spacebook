@@ -9,6 +9,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import LoginScreen from './components/login';
 import SignUpScreen from './components/signup';
 import MainScreen from './components/main';
+
 const Stack = createStackNavigator();
 
 
