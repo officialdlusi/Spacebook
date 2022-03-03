@@ -47,7 +47,6 @@ class FriendsScreen extends Component {
         })
         .then((response) => {
             if(response.status === 200){
-              console.log("Friends")
               return response.json()
             } else if(response.status === 401){
               throw 'Unauthorised';

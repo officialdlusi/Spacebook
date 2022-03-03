@@ -39,11 +39,11 @@ class Main extends Component{
             inactiveTintColor: 'grey',
           }}
         >
-          <Tab.Screen name = "ProfileScreen" component = {ProfileScreen} />
-          <Tab.Screen name = "SearchScreen" component = {SearchScreen}/>
-          <Tab.Screen name = "FriendsScreen" component = {FriendsScreen}/>
-          <Tab.Screen name = "FriendRequestsScreen" component = {FriendRequestsScreen}/>
-          <Tab.Screen name = "LogoutScreen" component = {LogoutScreen}/>
+          <Tab.Screen name = "ProfileScreen" options = {{headerShown: false}} component = {ProfileScreen} />
+          <Tab.Screen name = "SearchScreen" options = {{headerShown: false}} component = {SearchScreen}/>
+          <Tab.Screen name = "FriendsScreen" options = {{headerShown: false}} component = {FriendsScreen}/>
+          <Tab.Screen name = "FriendRequestsScreen" options = {{headerShown: false}} component = {FriendRequestsScreen}/>
+          <Tab.Screen name = "LogoutScreen" options = {{headerShown: false}} component = {LogoutScreen}/>
         </Tab.Navigator>
     )
   }
