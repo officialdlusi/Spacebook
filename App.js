@@ -23,7 +23,7 @@ function App(){
         <Stack.Navigator>
           <Stack.Screen name="Login" component={LoginScreen}/>
           <Stack.Screen name="Signup" component={SignUpScreen}/>
-          <Stack.Screen name="Main" component={MainScreen}/>
+          <Stack.Screen name="Main" options = {{headerShown: false}} component={MainScreen}/>
           <Stack.Screen name="Camera" component={CameraScreen}/>
         </Stack.Navigator>
       </NavigationContainer>
