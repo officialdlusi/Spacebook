@@ -141,4 +141,5 @@ class SearchScreen extends Component {
   }
 }
 
+
 export default SearchScreen;
