@@ -13,13 +13,15 @@ class FriendsScreen extends Component {
     }
   }
 
-  componentDidMount() {
-    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+  async componentDidMount() {
+    this.unsubscribe = this.props.navigation.addListener('focus',  async () => {
+      const id= await AsyncStorage.getItem('@session_id');
       this.checkLoggedIn();
-      this.getFriendsList();
+      this.getFriendsList(id);
     });
 
-    this.getFriendsList();
+    const id= await AsyncStorage.getItem('@session_id');
+    this.getFriendsList(id);
   
   }
 
@@ -27,9 +29,16 @@ class FriendsScreen extends Component {
     this.unsubscribe();
   }
 
-  getFriendsList = async (user_id) => {
+  checkLoggedIn = async () => {
     const value = await AsyncStorage.getItem('@session_token');
-    return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + '/friends/', {
+    if (value == null) {
+        this.props.navigation.navigate('Login');
+    }
+  };
+
+  getFriendsList = async (id) => {
+    const value = await AsyncStorage.getItem('@session_token');
+    return fetch("http://localhost:3333/api/1.0.0/user/" + id + '/friends/', {
           method: 'get',
           headers: {
             'Content-Type': 'application/json',
@@ -39,8 +48,7 @@ class FriendsScreen extends Component {
         .then((response) => {
             if(response.status === 200){
               console.log("Friends")
-              //getfreindrequest
-              this.getFriendsList();
+              return response.json()
             } else if(response.status === 401){
               throw 'Unauthorised';
             } else if(response.status === 403){
@@ -51,20 +59,18 @@ class FriendsScreen extends Component {
               throw 'Error'
             }
         })
+        .then((responseJson) => {
+          this.setState({
+            isLoading: false,
+            listData: responseJson
+          })
+        })
         .catch((error) => {
             console.log(error);
         })
-  }
-
-  checkLoggedIn = async () => {
-    const value = await AsyncStorage.getItem('@session_token');
-    if (value == null) {
-        this.props.navigation.navigate('Login');
-    }
-  };
+      }
 
   render() {
-
     if (this.state.isLoading){
       return (
         <View
@@ -84,7 +90,8 @@ class FriendsScreen extends Component {
                 data={this.state.listData}
                 renderItem={({item}) => (
                     <View>
-                      <Text>this.getFriendsList({item.user_givenname} {item.user_familyname});</Text>
+                      {/* <Text>{JSON.stringify(item)}</Text> */}
+                      <Text>{item.user_givenname} {item.user_familyname}</Text>
                     </View>
                 )}
                 keyExtractor={(item,index) => item.user_id.toString()}
