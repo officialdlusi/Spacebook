@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {View, Text, FlatList, TextInput, Button} from 'react-native';
+import {View, Text, FlatList, TextInput, Button, CheckBox} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Searchbar} from 'react-native-paper';
 
@@ -12,6 +12,7 @@ class SearchScreen extends Component {
       isLoading: true,
       listData: [],
       query: "",
+      checked: false
     }
   }
 
@@ -36,7 +37,14 @@ class SearchScreen extends Component {
 
   getFindUsers = async () => {
     const value = await AsyncStorage.getItem('@session_token');
-    return fetch("http://localhost:3333/api/1.0.0/search?q=" + this.state.query, {
+
+    let url = "http://localhost:3333/api/1.0.0/search?q=" + this.state.query;
+
+    if(this.state.checked){
+      url += "&search_in=friends&"
+    }
+
+    return fetch(url, {
           headers: {
             'X-Authorization':  value
           }
@@ -110,6 +118,11 @@ class SearchScreen extends Component {
             value={this.state.query}
           />
           <Button title="Search" onPress={() => this.getFindUsers()} />
+          <CheckBox
+           onValueChange={() => this.setState({checked:!this.state.checked})}
+           value={this.state.checked}
+           />
+           <Text>Search in friends only</Text>
           <FlatList
                 data={this.state.listData}
                 renderItem={({item}) => (
