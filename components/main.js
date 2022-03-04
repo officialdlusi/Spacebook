@@ -17,19 +17,19 @@ class Main extends Component{
         <Tab.Navigator
           screenOptions = {({route}) => ({
             tabBarLabel: "",
-            tabBarIcon: ({focused, color, size}) => {
+            tabBarIcon: ({focused, color, size, solid}) => {
               let iconName;
 
             if(route.name === 'ProfileScreen') {
-              iconName = focused ? 'person-outline' : 'person-outline';
+              iconName = focused ? 'person' : 'person-outline';
             } else if(route.name === 'SearchScreen') {
-              iconName = focused ? 'search-outline' : 'search-outline';
+              iconName = focused ? 'search' : 'search-outline';
             } else if(route.name === 'FriendsScreen'){
-              iconName = focused ? 'people-outline' : 'people-outline';
+              iconName = focused ? 'people' : 'people-outline';
             } else if(route.name === 'FriendRequestsScreen'){
-              iconName = focused ? 'person-add-outline' : 'person-add-outline';
+              iconName = focused ? 'person-add' : 'person-add-outline';
             } else if(route.name === 'LogoutScreen') {
-              iconName = focused ? 'log-out-outline' : 'log-out-outline';
+              iconName = focused ? 'log-out' : 'log-out-outline';
             }
             return <Ionicons name = {iconName} size = {size} color = {color} />;
             },
