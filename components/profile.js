@@ -1,7 +1,6 @@
 import React, {Component} from 'react';
 import {View, Text, FlatList, Button, TextInput, StyleSheet, Image} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { ActivityIndicator } from 'react-native-paper';
 
 
 class ProfileScreen extends Component {
@@ -11,7 +10,8 @@ class ProfileScreen extends Component {
     this.state = {
       isLoading: true,
       profile: {},
-      photo: null
+      photo: null,
+      text: ""
     }
   }
 
@@ -26,15 +26,18 @@ class ProfileScreen extends Component {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
     this.getProfile();
     this.getProfileImage();
+    this.getAddPost();
     });
 
   this.getProfile();
   this.getProfileImage();
+  this.getAddPost();
 }
 
   componentWillUnmount(){
     this.getProfile();
     this.getProfileImage();
+    this.getAddPost();
   }
 
   checkLoggedIn = async () => {
@@ -48,8 +51,6 @@ class ProfileScreen extends Component {
 
 
   getProfile = async () => {
-    // let id = null;
-    
     let id = await AsyncStorage.getItem('@session_id');
 
     let token = await AsyncStorage.getItem('@session_token');
@@ -81,14 +82,17 @@ class ProfileScreen extends Component {
         })
       }
 
-  getAddPost = async (id) => {
-    const value = await AsyncStorage.getItem('@session_token');
+  getAddPost = async () => {
+    const token = await AsyncStorage.getItem('@session_token');
+    
+    const id = await AsyncStorage.getItem('@session_id');
     return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
       method: 'post',
       headers : {
-        'Content-Type' : 'appliaction/json',
-        'X_authorization' : value
-      }
+        'Content-Type' : 'application/json',
+        'X-Authorization' : token
+      },
+      body: JSON.stringify(this.state)
     })
       .then((response) => {
         if(response.status === 201){
@@ -106,13 +110,17 @@ class ProfileScreen extends Component {
       })
   }
 
-  getDeletePost = async (id) => {
-    const value  = await AsyncStorage.getItem('@session_token');
-    return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post/" + id, {
-      method: 'delete',
-
-    })
-  }
+  // getDeletePost = async (id) => {
+  //   const value  = await AsyncStorage.getItem('@session_token');
+  //   return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post/" + id, {
+  //     method: 'delete',
+  //     headers: {
+  //       'Content-Type' : 'application/json',
+  //       'X-Authorization' : value
+  //     }
+      
+  //   })
+  // }
 
   getProfileImage = async () => {
     const token = await AsyncStorage.getItem('@session_token');
@@ -142,9 +150,19 @@ class ProfileScreen extends Component {
   render() {
 
     const {profile, isLoading} = this.state;
-
+    
     if (this.state.isLoading){
-      return(<ActivityIndicator/>);
+      return( 
+        <View
+          style={{
+          flex: 1,
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+      }}>
+        <Text>Loading..</Text>
+        </View>
+     );
         } else {
       return (
         <View style={styles.container}>
@@ -159,9 +177,10 @@ class ProfileScreen extends Component {
             }}
           />
         <Text>{profile.first_name + ' '}{profile.last_name}</Text>
-        <TextInput placeholder="Write a post here..."/>
+        <TextInput placeholder="Write a post here..." onPress={() => this.setState(text)} style={{borderRadius:4, padding:5, borderWidth:1, margin:5}}/>
         <Button title = "Post" onPress={() => this.getAddPost()}/>
         <Button title = "Delete" onPress={() => this.getDeletePost}/>
+
         <Button title = "Update Profile Picture" onPress={() => this.props.navigation.navigate("Camera")}/>
       </View>
       
