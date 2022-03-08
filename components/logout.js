@@ -2,19 +2,22 @@ import React, { Component } from 'react';
 import { Text, ScrollView, Button, TextInput } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
+
 class LogoutScreen extends Component{
     constructor(props){
         super(props);
 
         this.state = {
-            token: '',
-            user_id: 0,
-            username: "",
-            password: "",
-            name: "",
-            email: ""
+            first_name: "",
+            last_name: "",
+            email: "",
+            update_first_name: "",
+            update_last_name: "",
+            update_email: "",
         }
     }
+
+    
 
     componentDidMount(){
         this._unsubscribe = this.props.navigation.addListener('focus', () => {
@@ -36,26 +39,39 @@ class LogoutScreen extends Component{
         }
     }
 
+    
     updateProfile = async () => {
-        let id = await AsyncStorage.getItem('@session_id');
+        let data = {};
 
+        if(this.state.first_name != this.state.update_first_name){
+            data['first_name'] = this.state.first_name;
+        }
+
+        if(this.state.last_name != this.state.update_last_name){
+            data['last_name'] = this.state.last_name;
+        }
+
+        if(this.state.email != this.state.update_email){
+            data['email'] = this.state.email;
+        }
+
+        console.log(JSON.stringify(data));
+
+        let id = await AsyncStorage.getItem('@session_id');
         let token = await AsyncStorage.getItem('@session_token');
-        return fetch("http://localhost:3333/api/1.0.0/user/" + this.state.user_id, {
-            given_name: this.state.username,
-            family_name: this.state.name,
-            email: this.state.email,
-            password: this.state.password
-            }, {
-                method: 'patch',
+        return fetch("http://localhost:3333/api/1.0.0/user/" + id, 
+        {
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
-                    "X-Authorization": this.state.token
-                }
+                    "X-Authorization": token
+                },
+                body: JSON.stringify(data)
             })
             .then((response) => {
                 if(response.status === 200){
                     console.log("Updated information successfully")
-                    this.props.navigation.navigate("Home")
+                    this.props.navigation.navigate("Login")
                 }else if(response.status === 400){
                   throw 'Bad Request'
                 }else if(response.status === 401){
@@ -101,26 +117,22 @@ class LogoutScreen extends Component{
         return (
             <ScrollView>
                 <TextInput
-                    placeholder="Email"
-                    keyboardType="email-address"
+                    placeholder="Change your first name"
+                    onChangeText={(first_name) => this.setState({ first_name })}
+                    value={this.state.first_name}
+                    style={{borderRadius:4, padding:5, borderWidth:1, margin:5}}
+                />
+                <TextInput
+                    placeholder="Change your last name"
+                    onChangeText={(last_name) => this.setState({ last_name })}
+                    value={this.state.last_name}
+                    style={{borderRadius:4, padding:5, borderWidth:1, margin:5}}
+                />
+                <TextInput
+                    placeholder="Change your email"
                     onChangeText={(email) => this.setState({ email })}
                     value={this.state.email}
-                />
-                <TextInput
-                    placeholder="Username"
-                    onChangeText={(username) => this.setState({ username })}
-                    value={this.state.username}
-                />
-                <TextInput
-                    placeholder="Name"
-                    onChangeText={(name) => this.setState({ name })}
-                    value={this.state.name}
-                />
-                <TextInput
-                    placeholder="Password"
-                    secureTextEntry={true}
-                    onChangeText={(password) => this.setState({ password })}
-                    value={this.state.password}
+                    style={{borderRadius:4, padding:5, borderWidth:1, margin:5}}
                 />
                 <Button
                     title="Update Details"
