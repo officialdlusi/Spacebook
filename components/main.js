@@ -8,6 +8,7 @@ import SearchScreen from './search';
 import FriendsScreen from './friends';
 import FriendRequestsScreen from './friendrequests';
 import LogoutScreen from './logout';
+import PostScreen from './posts';
 
 const Tab = createBottomTabNavigator();
 
@@ -17,11 +18,13 @@ class Main extends Component{
         <Tab.Navigator
           screenOptions = {({route}) => ({
             tabBarLabel: "",
-            tabBarIcon: ({focused, color, size, solid}) => {
+            tabBarIcon: ({focused, color, size}) => {
               let iconName;
 
             if(route.name === 'ProfileScreen') {
               iconName = focused ? 'person' : 'person-outline';
+            } else if(route.name === 'PostScreen') {
+              iconName = focused ? 'chatbox' : 'chatbox-outline'
             } else if(route.name === 'SearchScreen') {
               iconName = focused ? 'search' : 'search-outline';
             } else if(route.name === 'FriendsScreen'){
@@ -40,6 +43,7 @@ class Main extends Component{
           }}
         >
           <Tab.Screen name = "ProfileScreen" options = {{headerShown: false}} component = {ProfileScreen} />
+          <Tab.Screen name = "PostScreen" options = {{headerShown: false}} component = {PostScreen}/>
           <Tab.Screen name = "SearchScreen" options = {{headerShown: false}} component = {SearchScreen}/>
           <Tab.Screen name = "FriendsScreen" options = {{headerShown: false}} component = {FriendsScreen}/>
           <Tab.Screen name = "FriendRequestsScreen" options = {{headerShown: false}} component = {FriendRequestsScreen}/>

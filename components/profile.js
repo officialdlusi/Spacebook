@@ -27,12 +27,10 @@ class ProfileScreen extends Component {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
     this.getProfile();
     this.getProfileImage();
-    this.getAddPost();
     });
 
   this.getProfile();
   this.getProfileImage();
-  this.getAddPost();
 }
 
   componentWillUnmount(){
@@ -47,9 +45,6 @@ class ProfileScreen extends Component {
         this.props.navigation.navigate('Login');
     }
   };
-
-
-
 
   getProfile = async () => {
     let id = await AsyncStorage.getItem('@session_id');
@@ -97,7 +92,8 @@ class ProfileScreen extends Component {
     })
       .then((response) => {
         if(response.status === 201){
-          console.log("Post Sent")
+          this.getData
+          //console.log("Post Sent")
         } else if(response.status === 401){
           throw 'Unauthorised'
         } else if(response.status === 404){
@@ -214,10 +210,11 @@ class ProfileScreen extends Component {
         <FlatList
           data = {this.state.postData}
           renderItem = {({item}) => (
-          <View>
-            <Text>{item.timestamp}</Text>
+          <View style = {{backgroundColor: "black"}}>
+            <Text>{item.text}</Text>
           </View>
       )}
+      keyExtractor = {(item, index) => item.post_id.toString()}
         />
       </View>
       

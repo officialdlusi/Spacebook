@@ -12,7 +12,7 @@ class SearchScreen extends Component {
       isLoading: true,
       listData: [],
       query: "",
-      checked: false
+      checked: false,
     }
   }
 
@@ -116,8 +116,9 @@ class SearchScreen extends Component {
           <TextInput
             onChangeText={(val) => {this.setState({query: val})}}
             value={this.state.query}
+            style={{borderRadius:4, padding:5, borderWidth:1, margin:5}}
           />
-          <Button title="Search" onPress={() => this.getFindUsers()} />
+          <Button title="Search" onPress={() => this.getFindUsers()}/>
           <CheckBox
            onValueChange={() => this.setState({checked:!this.state.checked})}
            value={this.state.checked}
