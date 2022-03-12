@@ -9,8 +9,9 @@ class PostScreen extends Component {
 
         this.state = {
             isLoading: true,
-            text: "",
-            postData: [{post_id: "", text: "", timestamp: "", author:[{user_id: "", first_name: "", last_name: "", email: ""}], numLikes: ""}]
+            userpost: "",
+            listData: []
+            // postData: [{post_id: "", text: "", timestamp: "", author:[{user_id: "", first_name: "", last_name: "", email: ""}], numLikes: ""}]
         }
     }
     
@@ -22,14 +23,17 @@ class PostScreen extends Component {
   };
 
   componentDidMount() {
-    this.getListofPosts();
+    this.unsubscribe = this.props.navigation.addListener('focus', () => {
+      this.checkLoggedIn();
+      this.getListofPosts();
+    });
 }
 
   componentWillUnmount(){
-    this.getSendPost();
+    this.unsubscribe();
   }
 
-    getSendPost = async () => {
+    getSendPost = async (userpost) => {
         const token = await AsyncStorage.getItem('@session_token');
     
         const id = await AsyncStorage.getItem('@session_id');
@@ -39,7 +43,7 @@ class PostScreen extends Component {
         'Content-Type' : 'application/json',
         'X-Authorization' : token
         },
-        body: JSON.stringify(this.state)
+        body: JSON.stringify({text:userpost})
         })
             .then((response) => {
                 if(response.status === 201){
@@ -62,7 +66,7 @@ class PostScreen extends Component {
     const token = await AsyncStorage.getItem('@session_token');
 
     const id = await AsyncStorage.getItem('@session_id');
-    fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
+    return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
       method: 'get',
       headers: {
         'Content-Type' : 'application/json',
@@ -70,8 +74,9 @@ class PostScreen extends Component {
       }
     })
     .then((response) => {
-      if(response.status === 201){
+      if(response.status === 200){
         console.log("Users Posts")
+        return response.json()
       } else if(response.status === 401){
         throw 'Unauthorised'
       } else if(response.status === 403){
@@ -82,10 +87,10 @@ class PostScreen extends Component {
         throw 'Server error'
       }
     })
-    .then((response) => {
+    .then((responseJson) => {
       this.setState({
         isLoading: false,
-        text: response.text
+        listData: responseJson
       })
     })
     .catch((error) => {
@@ -94,29 +99,26 @@ class PostScreen extends Component {
 }
 
 render() {
-
-    // const {isLoading} = this.state;
-
-    // if (this.state.isLoading){
-    //     return (
-    //       <View
-    //         style={{
-    //           flex: 1,
-    //           flexDirection: 'column',
-    //           justifyContent: 'center',
-    //           alignItems: 'center',
-    //         }}>
-    //         <Text>Loading..</Text>
-    //       </View>
-    //     );
-    //   }else{
+    if (this.state.isLoading){
+        return (
+          <View
+            style={{
+              flex: 1,
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+            <Text>Loading..</Text>
+          </View>
+        );
+      }else{
         return (
         <View>
-            <TextInput placeholder="Write a post here..." onChangeText={(text) => this.setState({text})} style={{borderRadius:4, padding:5, borderWidth:1, margin:5}}/>
-            <Button title = "Post" onPress={() => this.getSendPost()}/>
+            <TextInput placeholder="Write a post here..." onChangeText={(userpost) => this.setState({userpost})} style={{borderRadius:4, padding:5, borderWidth:1, margin:5}}/>
+            <Button title = "Post" onPress={() => this.getSendPost(this.state.userpost)}/>
             {/* <Button title = "Delete" onPress={() => this.getDeletePost()}/> */}
             <FlatList
-                data = {this.state.postData}
+                data = {this.state.listData}
                 renderItem = {({item}) => (
             <View>
                 <Text>{item.text}</Text>
@@ -126,7 +128,7 @@ render() {
         </View>
         )}
 }
-// }
+}
 
 export default PostScreen
 
