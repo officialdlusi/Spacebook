@@ -7588,6 +7588,11 @@
   "resolved" "https://registry.npmjs.org/react-freeze/-/react-freeze-1.0.0.tgz"
   "version" "1.0.0"
 
+"react-import@^1.5.3":
+  "integrity" "sha512-hdAOlUujaPV5ELHYs07xGX1ltJBPXtS7gEXQLaHLq4vOgt+IFZFUIxt/A+amz067Z3XmruDtyXGHR1ztT4Xt/w=="
+  "resolved" "https://registry.npmjs.org/react-import/-/react-import-1.5.3.tgz"
+  "version" "1.5.3"
+
 "react-is@^16.13.0", "react-is@^16.13.1", "react-is@^16.7.0":
   "integrity" "sha512-24e6ynE2H+OKt4kqsOvNd8kBpV65zoxbA4BVsEOB3ARVWQki/DHzaUoC5KuON/BiccDaCCTZBuOcfZs70kR8bQ=="
   "resolved" "https://registry.npmjs.org/react-is/-/react-is-16.13.1.tgz"

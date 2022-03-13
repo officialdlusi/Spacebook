@@ -3,8 +3,8 @@ import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class CameraScreen extends Component{
-  constructor(props){
+class CameraScreen extends Component {
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -13,53 +13,53 @@ class CameraScreen extends Component{
     }
   }
 
-  async componentDidMount(){
+  async componentDidMount() {
     const { status } = await Camera.requestCameraPermissionsAsync();
-    this.setState({hasPermission: status === 'granted'});
+    this.setState({ hasPermission: status === 'granted' });
   }
 
   getSendToServer = async (data) => {
-      // Get these from AsyncStorage
-      const token = await AsyncStorage.getItem('@session_token');
+    // Get these from AsyncStorage
+    const token = await AsyncStorage.getItem('@session_token');
 
-      const id = await AsyncStorage.getItem('@session_id');
+    const id = await AsyncStorage.getItem('@session_id');
 
-      let res = await fetch(data.base64);
-      let blob = await res.blob();
+    let res = await fetch(data.base64);
+    let blob = await res.blob();
 
-      return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
-          method: "post",
-          headers: {
-              "Content-Type": "image/png",
-              "X-Authorization": token
-          },
-          body: blob
-      })
+    return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
+      method: "post",
+      headers: {
+        "Content-Type": "image/png",
+        "X-Authorization": token
+      },
+      body: blob
+    })
       .then((response) => {
-          console.log("Picture added", response);
+        console.log("Picture added", response);
       })
       .catch((err) => {
-          console.log(err);
+        console.log(err);
       })
   }
 
-    takePicture = async () => {
-        if(this.camera){
-            const options = {
-                quality: 0.5, 
-                base64: true,
-                onPictureSaved: (data) => this.getSendToServer(data)
-            };
-            await this.camera.takePictureAsync(options); 
-        } 
+  takePicture = async () => {
+    if (this.camera) {
+      const options = {
+        quality: 0.5,
+        base64: true,
+        onPictureSaved: (data) => this.getSendToServer(data)
+      };
+      await this.camera.takePictureAsync(options);
     }
+  }
 
-  render(){
-    if(this.state.hasPermission){
-      return(
+  render() {
+    if (this.state.hasPermission) {
+      return (
         <View style={styles.container}>
-          <Camera 
-            style={styles.camera} 
+          <Camera
+            style={styles.camera}
             type={this.state.type}
             ref={ref => this.camera = ref}
           >
@@ -75,8 +75,8 @@ class CameraScreen extends Component{
           </Camera>
         </View>
       );
-    }else{
-      return(
+    } else {
+      return (
         <Text>No access to camera</Text>
       );
     }

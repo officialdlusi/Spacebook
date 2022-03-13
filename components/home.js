@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
-import {View, Text, FlatList} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 class HomeScreen extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -17,7 +17,7 @@ class HomeScreen extends Component {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
       this.checkLoggedIn();
     });
-  
+
     this.getData();
   }
 
@@ -28,40 +28,40 @@ class HomeScreen extends Component {
   getData = async () => {
     const value = await AsyncStorage.getItem('@session_token');
     return fetch("http://localhost:3333/api/1.0.0/search", {
-          'headers': {
-            'X-Authorization':  value
-          }
+      'headers': {
+        'X-Authorization': value
+      }
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json()
+        } else if (response.status === 401) {
+          this.props.navigation.navigate("Login");
+        } else {
+          throw 'Something went wrong';
+        }
+      })
+      .then((responseJson) => {
+        this.setState({
+          isLoading: false,
+          listData: responseJson
         })
-        .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 401){
-              this.props.navigation.navigate("Login");
-            }else{
-                throw 'Something went wrong';
-            }
-        })
-        .then((responseJson) => {
-          this.setState({
-            isLoading: false,
-            listData: responseJson
-          })
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   }
 
   checkLoggedIn = async () => {
     const value = await AsyncStorage.getItem('@session_token');
     if (value == null) {
-        this.props.navigation.navigate('Login');
+      this.props.navigation.navigate('Login');
     }
   };
 
   render() {
 
-    if (this.state.isLoading){
+    if (this.state.isLoading) {
       return (
         <View
           style={{
@@ -73,22 +73,22 @@ class HomeScreen extends Component {
           <Text>Loading..</Text>
         </View>
       );
-    }else{
+    } else {
       return (
         <View>
           <FlatList
-                data={this.state.listData}
-                renderItem={({item}) => (
-                    <View>
-                      <Text>{item.user_givenname} {item.user_familyname}</Text>
-                    </View>
-                )}
-                keyExtractor={(item,index) => item.user_id.toString()}
-              />
+            data={this.state.listData}
+            renderItem={({ item }) => (
+              <View>
+                <Text>{item.user_givenname} {item.user_familyname}</Text>
+              </View>
+            )}
+            keyExtractor={(item, index) => item.user_id.toString()}
+          />
         </View>
       );
     }
-    
+
   }
 }
 

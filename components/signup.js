@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { Button, ScrollView, TextInput, Text } from 'react-native';
 
-class SignupScreen extends Component{
-    constructor(props){
+class SignupScreen extends Component {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -38,7 +38,7 @@ class SignupScreen extends Component{
 
         // const emailRegex = 
         //     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-        
+
         // const email = this.state.email;
 
         // if (emailRegex.test(email)){
@@ -58,7 +58,7 @@ class SignupScreen extends Component{
         // }
 
         // if(this.state.emailValidation && this.state.passwordValidation && this.state.first_nameValidation && this.state.last_nameValidation){
-            
+
         //     let data = {
         //         "firstname": this.state.first_name,
         //         "lastname": this.state.last_name,
@@ -66,19 +66,19 @@ class SignupScreen extends Component{
         //         "password": this.state.password
         //     }
 
-            return fetch("http://localhost:3333/api/1.0.0/user", {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(this.state)
-            })
+        return fetch("http://localhost:3333/api/1.0.0/user", {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.state)
+        })
             .then((response) => {
-                if(response.status === 201){
+                if (response.status === 201) {
                     return response.json()
-                }else if(response.status === 400){
+                } else if (response.status === 400) {
                     throw 'Failed validation';
-                }else{
+                } else {
                     throw 'Something went wrong';
                 }
             })
@@ -87,40 +87,40 @@ class SignupScreen extends Component{
                 this.props.navigation.navigate("Login");
             })
             .catch((error) => {
-                this.setState({"error": error})
+                this.setState({ "error": error })
             })
         // } else {
         //     this.setState({"error": "one or more of the fields is incomplete"})
         // }
-        }
+    }
 
-    render(){
+    render() {
         return (
             <ScrollView>
                 <TextInput
                     placeholder="Enter your first name..."
-                    onChangeText={(first_name) => this.setState({first_name})}
+                    onChangeText={(first_name) => this.setState({ first_name })}
                     value={this.state.first_name}
-                    style={{padding:5, borderWidth:1, margin:5}}
+                    style={{ padding: 5, borderWidth: 1, margin: 5 }}
                 />
                 <TextInput
                     placeholder="Enter your last name..."
-                    onChangeText={(last_name) => this.setState({last_name})}
+                    onChangeText={(last_name) => this.setState({ last_name })}
                     value={this.state.last_name}
-                    style={{padding:5, borderWidth:1, margin:5}}
+                    style={{ padding: 5, borderWidth: 1, margin: 5 }}
                 />
                 <TextInput
                     placeholder="Enter your email..."
-                    onChangeText={(email) => this.setState({email})}
+                    onChangeText={(email) => this.setState({ email })}
                     value={this.state.email}
-                    style={{padding:5, borderWidth:1, margin:5}}
+                    style={{ padding: 5, borderWidth: 1, margin: 5 }}
                 />
                 <TextInput
                     placeholder="Enter your password..."
-                    onChangeText={(password) => this.setState({password})}
+                    onChangeText={(password) => this.setState({ password })}
                     value={this.state.password}
                     secureTextEntry
-                    style={{padding:5, borderWidth:1, margin:5}}
+                    style={{ padding: 5, borderWidth: 1, margin: 5 }}
                 />
                 <Button
                     title="Create an account"
