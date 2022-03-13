@@ -1,11 +1,11 @@
-import React, {Component} from 'react';
-import {View, Text, FlatList, TextInput, Button, CheckBox} from 'react-native';
+import React, { Component } from 'react';
+import { View, Text, FlatList, TextInput, Button, CheckBox } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Searchbar} from 'react-native-paper';
+import { Searchbar } from 'react-native-paper';
 
 
 class SearchScreen extends Component {
-  constructor(props){
+  constructor(props) {
     super(props);
 
     this.state = {
@@ -19,7 +19,7 @@ class SearchScreen extends Component {
   checkLoggedIn = async () => {
     const value = await AsyncStorage.getItem('@session_token');
     if (value == null) {
-        this.props.navigation.navigate('Login');
+      this.props.navigation.navigate('Login');
     }
   };
 
@@ -27,7 +27,7 @@ class SearchScreen extends Component {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
       this.checkLoggedIn();
     });
-  
+
     this.getFindUsers();
   }
 
@@ -40,35 +40,35 @@ class SearchScreen extends Component {
 
     let url = "http://localhost:3333/api/1.0.0/search?q=" + this.state.query;
 
-    if(this.state.checked){
+    if (this.state.checked) {
       url += "&search_in=friends&"
     }
 
     return fetch(url, {
-          headers: {
-            'X-Authorization':  value
-          }
+      headers: {
+        'X-Authorization': value
+      }
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          return response.json()
+        } else if (response.status === 401) {
+          this.props.navigation.navigate("Login");
+        } else {
+          throw 'Something went wrong';
+        }
+      })
+      .then((responseJson) => {
+        this.setState({
+          isLoading: false,
+          listData: responseJson
         })
-        .then((response) => {
-            if(response.status === 200){
-                return response.json()
-            }else if(response.status === 401){
-              this.props.navigation.navigate("Login");
-            }else{
-                throw 'Something went wrong';
-            }
-        })
-        .then((responseJson) => {
-          this.setState({
-            isLoading: false,
-            listData: responseJson
-          })
-        })
-        .catch((error) => {
-            console.log(error);
-        })
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   }
-  
+
   getSendFriendRequest = async (id) => {
     const value = await AsyncStorage.getItem('@session_token');
     return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/friends", {
@@ -78,27 +78,27 @@ class SearchScreen extends Component {
         'X-Authorization': value
       }
     })
-    .then((response) => {
-        if(response.status === 200){
+      .then((response) => {
+        if (response.status === 200) {
           console.log("Friend Request Sent")
-        } else if(response.status === 401){
+        } else if (response.status === 401) {
           throw 'Unauthorised'
-        } else if(response.status === 403){
+        } else if (response.status === 403) {
           throw 'User is already added as a friend'
-        } else if(response.status === 404){
+        } else if (response.status === 404) {
           throw 'Not found'
-        } else if(response.status === 500){
+        } else if (response.status === 500) {
           throw 'Server error'
         }
       })
       .catch((error) => {
-          console.log(error);
+        console.log(error);
       })
   }
 
   render() {
 
-    if (this.state.isLoading){
+    if (this.state.isLoading) {
       return (
         <View
           style={{
@@ -110,35 +110,35 @@ class SearchScreen extends Component {
           <Text>Loading..</Text>
         </View>
       );
-    }else{
+    } else {
       return (
         <View>
           <TextInput
-            onChangeText={(val) => {this.setState({query: val})}}
+            onChangeText={(val) => { this.setState({ query: val }) }}
             value={this.state.query}
-            style={{borderRadius:4, padding:5, borderWidth:1, margin:5}}
+            style={{ borderRadius: 4, padding: 5, borderWidth: 1, margin: 5 }}
           />
-          <Button title="Search" onPress={() => this.getFindUsers()}/>
+          <Button title="Search" onPress={() => this.getFindUsers()} />
           <CheckBox
-           onValueChange={() => this.setState({checked:!this.state.checked})}
-           value={this.state.checked}
-           />
-           <Text>Search in friends only</Text>
+            onValueChange={() => this.setState({ checked: !this.state.checked })}
+            value={this.state.checked}
+          />
+          <Text>Search in friends only</Text>
           <FlatList
-                data={this.state.listData}
-                renderItem={({item}) => (
-                    <View>
-                      <Text>{item.user_givenname} {item.user_familyname}</Text>
-                      {/* <Button title="View Profile" onPress={() => {navigation.navigate()}}/> */}
-                      <Button title="Add Friend" onPress={() => this.getSendFriendRequest(item.user_id)}/>
-                    </View>
-                )}
-                keyExtractor={(item,index) => item.user_id.toString()}
-              />
+            data={this.state.listData}
+            renderItem={({ item }) => (
+              <View>
+                <Text>{item.user_givenname} {item.user_familyname}</Text>
+                {/* <Button title="View Profile" onPress={() => {navigation.navigate()}}/> */}
+                <Button title="Add Friend" onPress={() => this.getSendFriendRequest(item.user_id)} />
+              </View>
+            )}
+            keyExtractor={(item, index) => item.user_id.toString()}
+          />
         </View>
       );
     }
-    
+
   }
 }
 

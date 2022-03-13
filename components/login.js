@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import { Button, ScrollView, TextInput,  Text} from 'react-native';
+import { Button, ScrollView, TextInput, Text } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-class LoginScreen extends Component{
-    constructor(props){
+class LoginScreen extends Component {
+    constructor(props) {
         super(props);
 
         this.state = {
@@ -40,60 +40,60 @@ class LoginScreen extends Component{
 
 
         // if(this.state.emailValdiation && this.state.passwordValdation){
-            
+
         //     let data = {
         //         "email": this.state.email,
         //         "password": this.state.password
         //     }
-            
-            return fetch("http://localhost:3333/api/1.0.0/login", {
-                method: 'post',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(this.state)
-            })
+
+        return fetch("http://localhost:3333/api/1.0.0/login", {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(this.state)
+        })
             .then((response) => {
-                if(response.status === 200){
+                if (response.status === 200) {
                     return response.json()
-                }else if(response.status === 400){
+                } else if (response.status === 400) {
                     throw 'Invalid email or password';
-                }else{
+                } else {
                     throw 'Something went wrong';
                 }
             })
             .then(async (responseJson) => {
-                    console.log(responseJson);
-                    await AsyncStorage.setItem('@session_id', responseJson.id);
-                    await AsyncStorage.setItem('@session_token', responseJson.token);
-                    this.props.navigation.navigate("Main");
+                console.log(responseJson);
+                await AsyncStorage.setItem('@session_id', responseJson.id);
+                await AsyncStorage.setItem('@session_token', responseJson.token);
+                this.props.navigation.navigate("Main");
             })
             .catch((error) => {
-                this.setState({"error": error})
+                this.setState({ "error": error })
             })
         // }else{
         //     this.setState({"error": "Email or password not valid"})
         // }
 
 
-        
+
     }
 
-    render(){
+    render() {
         return (
             <ScrollView>
                 <TextInput
                     placeholder="Enter your email..."
-                    onChangeText={(email) => this.setState({email})}
+                    onChangeText={(email) => this.setState({ email })}
                     value={this.state.email}
-                    style={{borderRadius:4, padding:5, borderWidth:1, margin:5}}
+                    style={{ borderRadius: 4, padding: 5, borderWidth: 1, margin: 5 }}
                 />
                 <TextInput
                     placeholder="Enter your password..."
-                    onChangeText={(password) => this.setState({password})}
+                    onChangeText={(password) => this.setState({ password })}
                     value={this.state.password}
                     secureTextEntry
-                    style={{borderRadius:4 ,padding:5, borderWidth:1, margin:5}}
+                    style={{ borderRadius: 4, padding: 5, borderWidth: 1, margin: 5 }}
                 />
                 <Button
                     title="Login"
