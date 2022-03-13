@@ -10,7 +10,7 @@ class PostScreen extends Component {
     this.state = {
       isLoading: true,
       text: "",
-      postData: [{ post_id: "", text: "", timestamp: "", author: [{ user_id: "", first_name: "", last_name: "", email: "" }], numLikes: "" }]
+      postData: [{ post_id: "", text: "", timestamp: "", author: [{ user_id: "", first_name: "", last_name: "", email: "" }], numLikes: "" }],
     }
   }
 
@@ -62,7 +62,7 @@ class PostScreen extends Component {
     const token = await AsyncStorage.getItem('@session_token');
 
     const id = await AsyncStorage.getItem('@session_id');
-    fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
+    return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
@@ -94,6 +94,36 @@ class PostScreen extends Component {
       })
   }
 
+  getDeletePost = async (post_id) => {
+    const token = await AsyncStorage.getItem('@session_token');
+
+    const id = await AsyncStorage.getItem('@session_id');
+    return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post/" + post_id, {
+      method: 'delete',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': token
+      }
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        console.log("Post Deleted")
+        this.getListofPosts();
+      } else if (response.status === 401) {
+        throw 'Unauthorised'
+      } else if (response.status === 403) {
+        throw 'Forbidden - you can only delete your own posts'
+      } else if (response.status === 404) {
+        throw 'Not Found'
+      } else if (response.status === 500) {
+        throw 'Server error'
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
+
   render() {
 
     // const {isLoading} = this.state;
@@ -121,7 +151,7 @@ class PostScreen extends Component {
             renderItem={({ item }) => (
               <View>
                 <Text>{item.text}</Text>
-                <Button title="Delete Post" onPress={() => this.getDeletePost()} />
+                <Button title="Delete Post" onPress={() => this.getDeletePost(item.post_id)} />
               </View>
             )}
           />
