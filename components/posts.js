@@ -9,12 +9,11 @@ class PostScreen extends Component {
 
         this.state = {
             isLoading: true,
-            userpost: "",
-            listData: []
-            // postData: [{post_id: "", text: "", timestamp: "", author:[{user_id: "", first_name: "", last_name: "", email: ""}], numLikes: ""}]
+            text: "",
+            postData: [{post_id: "", text: "", timestamp: "", author:[{user_id: "", first_name: "", last_name: "", email: ""}], numLikes: ""}]
         }
     }
-    
+
     checkLoggedIn = async () => {
     const value = await AsyncStorage.getItem('@session_token');
     if (value == null) {
@@ -23,19 +22,16 @@ class PostScreen extends Component {
   };
 
   componentDidMount() {
-    this.unsubscribe = this.props.navigation.addListener('focus', () => {
-      this.checkLoggedIn();
-      this.getListofPosts();
-    });
+    this.getListofPosts();
 }
 
   componentWillUnmount(){
-    this.unsubscribe();
+    this.getSendPost();
   }
 
-    getSendPost = async (userpost) => {
+    getSendPost = async () => {
         const token = await AsyncStorage.getItem('@session_token');
-    
+
         const id = await AsyncStorage.getItem('@session_id');
         return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
             method: 'post',
@@ -43,7 +39,7 @@ class PostScreen extends Component {
         'Content-Type' : 'application/json',
         'X-Authorization' : token
         },
-        body: JSON.stringify({text:userpost})
+        body: JSON.stringify(this.state)
         })
             .then((response) => {
                 if(response.status === 201){
@@ -66,7 +62,7 @@ class PostScreen extends Component {
     const token = await AsyncStorage.getItem('@session_token');
 
     const id = await AsyncStorage.getItem('@session_id');
-    return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
+    fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
       method: 'get',
       headers: {
         'Content-Type' : 'application/json',
@@ -90,7 +86,7 @@ class PostScreen extends Component {
     .then((responseJson) => {
       this.setState({
         isLoading: false,
-        listData: responseJson
+        postData: responseJson
       })
     })
     .catch((error) => {
@@ -99,36 +95,40 @@ class PostScreen extends Component {
 }
 
 render() {
-    if (this.state.isLoading){
-        return (
-          <View
-            style={{
-              flex: 1,
-              flexDirection: 'column',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
-            <Text>Loading..</Text>
-          </View>
-        );
-      }else{
+
+    // const {isLoading} = this.state;
+
+    // if (this.state.isLoading){
+    //     return (
+    //       <View
+    //         style={{
+    //           flex: 1,
+    //           flexDirection: 'column',
+    //           justifyContent: 'center',
+    //           alignItems: 'center',
+    //         }}>
+    //         <Text>Loading..</Text>
+    //       </View>
+    //     );
+    //   }else{
         return (
         <View>
-            <TextInput placeholder="Write a post here..." onChangeText={(userpost) => this.setState({userpost})} style={{borderRadius:4, padding:5, borderWidth:1, margin:5}}/>
-            <Button title = "Post" onPress={() => this.getSendPost(this.state.userpost)}/>
+            <TextInput placeholder="Write a post here..." onChangeText={(text) => this.setState({text})} style={{borderRadius:4, padding:5, borderWidth:1, margin:5}}/>
+            <Button title = "Post" onPress={() => this.getSendPost()}/>
             {/* <Button title = "Delete" onPress={() => this.getDeletePost()}/> */}
             <FlatList
-                data = {this.state.listData}
+                data = {this.state.postData}
                 renderItem = {({item}) => (
             <View>
                 <Text>{item.text}</Text>
+                <Button title = "Delete Post" onPress = {() => this.getDeletePost()}/>
             </View>
                 )}
             />
         </View>
         )}
 }
-}
+// }
 
 export default PostScreen
 
@@ -139,4 +139,4 @@ const styles = StyleSheet.create({
       alignItems: 'center',
       justifyContent: 'center',
     },
-  });
+  }); 
