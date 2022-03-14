@@ -11,6 +11,7 @@ class PostScreen extends Component {
       isLoading: true,
       text: "",
       postData: [{ post_id: "", text: "", timestamp: "", author: [{ user_id: "", first_name: "", last_name: "", email: "" }], numLikes: "" }],
+      updatePost: ""
     }
   }
 
@@ -125,6 +126,14 @@ class PostScreen extends Component {
   }
 
   getUpdatePost = async (post_id) => {
+    let data = {};
+
+    if (this.state.text != this.state.updatePost){
+      data['text'] = this.state.text
+    }
+
+    console.log(JSON.stringify(data));
+
     const token = await AsyncStorage.getItem('@session_token');
 
     const id = await AsyncStorage.getItem('@session_id');
@@ -159,8 +168,6 @@ class PostScreen extends Component {
 
   render() {
 
-    // const {isLoading} = this.state;
-
     if (this.state.isLoading) {
       return (
         <View
@@ -186,7 +193,7 @@ class PostScreen extends Component {
                 <Text>{item.text}</Text>
                 <Button title="Delete Post" onPress={() => this.getDeletePost(item.post_id)} />
                 <TextInput placeholder="Update Post..." onChangeText={(text) => this.setState({ text })} style={{ borderRadius: 4, padding: 5, borderWidth: 1, margin: 5 }} />
-                <Button title="Update" onPress={() => this.getUpdatePost()} />
+                <Button title="Update" onPress={() => this.getUpdatePost(item.post_id,this.state.text)} />
               </View>
             )}
           />
