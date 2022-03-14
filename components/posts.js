@@ -124,6 +124,39 @@ class PostScreen extends Component {
     })
   }
 
+  getUpdatePost = async (post_id) => {
+    const token = await AsyncStorage.getItem('@session_token');
+
+    const id = await AsyncStorage.getItem('@session_id');
+    return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post/" + post_id, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': token
+      },
+      body: JSON.stringify(this.state)
+    })
+    .then((response) => {
+      if (response.status === 200) {
+        console.log("Users Post Updated")
+        this.getListofPosts();
+      } else if (response.status === 400) {
+        throw 'Bad Request'
+      } else if (response.status === 401) {
+        throw 'Unauthorised'
+      } else if (response.status === 403) {
+        throw 'Forbidden - you can only update your own posts'
+      } else if (response.status === 404) {
+        throw 'Not Found'
+      } else if (response.status === 500) {
+        throw 'Server error'
+      }
+    })
+    .catch((error) => {
+      console.log(error);
+    })
+  }
+
   render() {
 
     // const {isLoading} = this.state;
@@ -152,6 +185,8 @@ class PostScreen extends Component {
               <View>
                 <Text>{item.text}</Text>
                 <Button title="Delete Post" onPress={() => this.getDeletePost(item.post_id)} />
+                <TextInput placeholder="Update Post..." onChangeText={(text) => this.setState({ text })} style={{ borderRadius: 4, padding: 5, borderWidth: 1, margin: 5 }} />
+                <Button title="Update" onPress={() => this.getUpdatePost()} />
               </View>
             )}
           />
