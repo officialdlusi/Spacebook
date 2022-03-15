@@ -12,7 +12,8 @@ class ProfileScreen extends Component {
       profile: {},
       photo: null,
       text: "",
-      postData: ""
+      profileData: "",
+      postData: [{ post_id: "", text: "", timestamp: "", author: [{ user_id: "", first_name: "", last_name: "", email: "" }], numLikes: "" }]
     }
   }
 
@@ -27,6 +28,7 @@ class ProfileScreen extends Component {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
       this.getProfile();
       this.getProfileImage();
+      this.getListofPosts();
     });
 
     this.getProfile();
@@ -36,7 +38,6 @@ class ProfileScreen extends Component {
   componentWillUnmount() {
     this.getProfile();
     this.getProfileImage();
-    this.getAddPost();
   }
 
   checkLoggedIn = async () => {
@@ -77,17 +78,7 @@ class ProfileScreen extends Component {
         console.log(error);
       })
   }
-  // getDeletePost = async (id) => {
-  //   const value  = await AsyncStorage.getItem('@session_token');
-  //   return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post/" + id, {
-  //     method: 'delete',
-  //     headers: {
-  //       'Content-Type' : 'application/json',
-  //       'X-Authorization' : value
-  //     }
 
-  //   })
-  // }
   getProfileImage = async () => {
     const token = await AsyncStorage.getItem('@session_token');
 
@@ -111,6 +102,43 @@ class ProfileScreen extends Component {
       .catch((err) => {
         console.log("error", err)
       });
+  }
+
+
+  getListofPosts = async () => {
+    const token = await AsyncStorage.getItem('@session_token');
+
+    const id = await AsyncStorage.getItem('@session_id');
+    return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
+      method: 'get',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Authorization': token
+      }
+    })
+      .then((response) => {
+        if (response.status === 200) {
+          console.log("Users Posts")
+          return response.json()
+        } else if (response.status === 401) {
+          throw 'Unauthorised'
+        } else if (response.status === 403) {
+          throw 'Can only view the posts of yourself or your friends'
+        } else if (response.status === 404) {
+          throw 'Not Found'
+        } else if (response.status === 500) {
+          throw 'Server error'
+        }
+      })
+      .then((responseJson) => {
+        this.setState({
+          isLoading: false,
+          postData: responseJson
+        })
+      })
+      .catch((error) => {
+        console.log(error);
+      })
   }
 
   render() {
@@ -145,10 +173,21 @@ class ProfileScreen extends Component {
           <Text>{profile.first_name + ' '}{profile.last_name}</Text>
           <Button title="Update Profile Picture" onPress={() => this.props.navigation.navigate("Camera")} />
           <FlatList
-            data={this.state.postData}
+            data={this.state.profileData}
             renderItem={({ item }) => (
               <View style={{ backgroundColor: "black" }}>
                 <Text>{item.text}</Text>
+              </View>
+            )}
+            keyExtractor={(item, index) => item.post_id.toString()}
+          />
+          <FlatList
+            data={this.state.postData}
+            renderItem={({ item }) => (
+              <View style={{ Color: "black" }}>
+                <Text>{item.text}</Text>
+                <Button title="Like" onPress={() => this.getLikePost(item.post_id)}/>
+                <Button title="Dislike" onPress={() => this.getDislikePost(item.post_id)} />
               </View>
             )}
             keyExtractor={(item, index) => item.post_id.toString()}
