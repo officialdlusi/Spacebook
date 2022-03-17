@@ -9,13 +9,16 @@ class FeedScreen extends Component {
         this.state = {
             isLoading: true,
             text: "",
+            post_id:'',
+            listData: [],
             postData: [{ post_id: "", text: "", timestamp: "", author: [{ user_id: "", first_name: "", last_name: "", email: "" }], numLikes: "" }],
             updatePost: "",
+            //postData:[]
         }
     }
     componentDidMount() {
         this.unsubscribe = this.props.navigation.addListener('focus', () => {
-        const {friends_id} = this.props.route.params;
+        // const {friends_id} = this.props.route.params;
         this.getListofPosts();
         });
       
@@ -60,7 +63,34 @@ class FeedScreen extends Component {
             })
     }
 
-    
+    getAddLike = async (post_id) => {
+        const token = await AsyncStorage.getItem('@session_token');
+        const {user_id} = this.props.route.params;
+        return fetch("http://localhost:3333/api/1.0.0/user/" + user_id + "/post/" + post_id + "/like", {
+            method: 'post',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Authorization': token
+            }
+        })
+        .then((response) => {
+            if (response.status === 200) {
+                this.getListofPosts();
+                console.log("Post Liked")
+            } else if (response.status === 401) {
+                throw 'Unauthorised'
+            } else if (response.status === 403) {
+                throw 'Forbidden - You have already liked this post'
+            } else if (response.status === 404) {
+                throw 'Not Found'
+            } else if (response.status === 500) {
+                throw 'Server error'
+            }
+        })
+          .catch((error) => {
+            console.log(error);
+          })
+    }
 
     render() {
         if (this.state.isLoading) {
@@ -82,7 +112,7 @@ class FeedScreen extends Component {
                     renderItem={({ item }) => (
                         <View>
                             <Text>{item.text}</Text>
-                            <Button title="Like" onPress={() => this.getLike(item.post_id)} />
+                            <Button title="Like" onPress={() => this.getAddLike(item.post_id)} />
                             <Button title="Dislike" onPress={() => this.getDislike(item.post_id)} />
                         </View>
                     )}
