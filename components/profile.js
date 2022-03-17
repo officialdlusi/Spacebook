@@ -28,7 +28,6 @@ class ProfileScreen extends Component {
     this.unsubscribe = this.props.navigation.addListener('focus', () => {
       this.getProfile();
       this.getProfileImage();
-      this.getListofPosts();
     });
 
     this.getProfile();
@@ -104,43 +103,6 @@ class ProfileScreen extends Component {
       });
   }
 
-
-  getListofPosts = async () => {
-    const token = await AsyncStorage.getItem('@session_token');
-
-    const id = await AsyncStorage.getItem('@session_id');
-    return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/post", {
-      method: 'get',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Authorization': token
-      }
-    })
-      .then((response) => {
-        if (response.status === 200) {
-          console.log("Users Posts")
-          return response.json()
-        } else if (response.status === 401) {
-          throw 'Unauthorised'
-        } else if (response.status === 403) {
-          throw 'Can only view the posts of yourself or your friends'
-        } else if (response.status === 404) {
-          throw 'Not Found'
-        } else if (response.status === 500) {
-          throw 'Server error'
-        }
-      })
-      .then((responseJson) => {
-        this.setState({
-          isLoading: false,
-          postData: responseJson
-        })
-      })
-      .catch((error) => {
-        console.log(error);
-      })
-  }
-
   render() {
 
     const { profile, isLoading } = this.state;
@@ -159,7 +121,7 @@ class ProfileScreen extends Component {
       );
     } else {
       return (
-        <View style={styles.container}>
+        <View style={stylescamera.container}>
           <Image
             source={{
               uri: this.state.photo,
@@ -186,8 +148,8 @@ class ProfileScreen extends Component {
             renderItem={({ item }) => (
               <View style={{ Color: "black" }}>
                 <Text>{item.text}</Text>
-                <Button title="Like" onPress={() => this.getLikePost(item.post_id)}/>
-                <Button title="Dislike" onPress={() => this.getDislikePost(item.post_id)} />
+                {/* <Button title="Like" onPress={() => this.getLikePost(item.post_id)}/>
+                <Button title="Dislike" onPress={() => this.getDislikePost(item.post_id)} /> */}
               </View>
             )}
             keyExtractor={(item, index) => item.post_id.toString()}
@@ -201,7 +163,7 @@ class ProfileScreen extends Component {
 
 export default ProfileScreen;
 
-const styles = StyleSheet.create({
+const stylescamera = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',

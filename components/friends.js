@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { View, Text, FlatList } from 'react-native';
+import { View, Text, FlatList, Button } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -91,6 +91,10 @@ class FriendsScreen extends Component {
               <View>
                 {/* <Text>{JSON.stringify(item)}</Text> */}
                 <Text>{item.user_givenname} {item.user_familyname}</Text>
+              <Button title="View Friends Posts" onPress={() => this.props.navigation.navigate('FeedScreen',  {user_id: item.user_id}   )} />
+              
+                {/* <Button title="View Friends Posts" onPress={() => this.props.navigation.navigate("FriendsMain", { screen: 'FeedScreen', "id" : item.user_id})} /> */}
+                {/* ("Feed", { "friend_id": item.user_id }) */}
               </View>
             )}
             keyExtractor={(item, index) => item.user_id.toString()}

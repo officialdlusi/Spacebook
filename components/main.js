@@ -1,11 +1,10 @@
-import 'react-native-gesture-handler';
 import React, { Component } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 import ProfileScreen from './profile';
 import SearchScreen from './search';
-import FriendsScreen from './friends';
+import FriendsMainScreen from './friendsmain';
 import FriendRequestsScreen from './friendrequests';
 import LogoutScreen from './logout';
 import PostScreen from './posts';
@@ -27,7 +26,7 @@ class Main extends Component {
               iconName = focused ? 'chatbox' : 'chatbox-outline'
             } else if (route.name === 'SearchScreen') {
               iconName = focused ? 'search' : 'search-outline';
-            } else if (route.name === 'FriendsScreen') {
+            } else if (route.name === 'FriendsMainScreen') {
               iconName = focused ? 'people' : 'people-outline';
             } else if (route.name === 'FriendRequestsScreen') {
               iconName = focused ? 'person-add' : 'person-add-outline';
@@ -45,7 +44,7 @@ class Main extends Component {
         <Tab.Screen name="ProfileScreen" options={{ headerShown: false }} component={ProfileScreen} />
         <Tab.Screen name="PostScreen" options={{ headerShown: false }} component={PostScreen} />
         <Tab.Screen name="SearchScreen" options={{ headerShown: false }} component={SearchScreen} />
-        <Tab.Screen name="FriendsScreen" options={{ headerShown: false }} component={FriendsScreen} />
+        <Tab.Screen name="FriendsMainScreen" options={{ headerShown: false }} component={FriendsMainScreen} />
         <Tab.Screen name="FriendRequestsScreen" options={{ headerShown: false }} component={FriendRequestsScreen} />
         <Tab.Screen name="LogoutScreen" options={{ headerShown: false }} component={LogoutScreen} />
       </Tab.Navigator>
