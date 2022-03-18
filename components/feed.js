@@ -90,8 +90,8 @@ class FeedScreen extends Component {
 
   getLike = async (post_id) => {
     const token = await AsyncStorage.getItem('@session_token');
-    const { id } = this.props.route.params;
-    return fetch(`http://localhost:3333/api/1.0.0/user/${id}/post/${post_id}/like`, {
+    const { user_id } = this.props.route.params;
+    return fetch(`http://localhost:3333/api/1.0.0/user/${user_id}/post/${post_id}/like`, {
       method: 'post',
       headers: {
         'Content-Type': 'application/json',
@@ -119,8 +119,8 @@ class FeedScreen extends Component {
 
   getRemoveLike = async (post_id) => {
     const token = await AsyncStorage.getItem('@session_token');
-    const { id } = this.props.route.params;
-    return fetch(`http://localhost:3333/api/1.0.0/user/${id}/post/${post_id}/like`, {
+    const { user_id } = this.props.route.params;
+    return fetch(`http://localhost:3333/api/1.0.0/user/${user_id}/post/${post_id}/like`, {
       method: 'delete',
       headers: {
         'Content-Type': 'application/json',
@@ -172,6 +172,8 @@ class FeedScreen extends Component {
                             {item.author.last_name}
                             {' '}
                             Posts
+                            {' '}
+                            {item.numLikes}
                         </Text>
                         <Text style={styles.postText}>{item.text}</Text>
                         <View style={styles.fixToText}>
