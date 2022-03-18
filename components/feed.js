@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-use-before-define */
 /* eslint-disable no-console */
 /* eslint-disable react/jsx-closing-tag-location */
@@ -17,7 +18,7 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import {
-  View, Text, FlatList, Button,
+  View, Text, FlatList, Button, StyleSheet,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -163,18 +164,22 @@ class FeedScreen extends Component {
             <FlatList
               data={this.state.postData}
               renderItem={({ item }) => (
+                <View style={styles.postBox}>
                     <View>
-                        <Text>
+                        <Text style={styles.postText}>
                             {item.author.first_name}
                             {' '}
                             {item.author.last_name}
                             {' '}
                             Posts
                         </Text>
-                        <Text>{item.text}</Text>
-                        <Button title="Like" onPress={() => this.getLike(item.post_id)} />
-                        <Button title="Remove Like" onPress={() => this.getRemoveLike(item.post_id)} />
-                        <Button title="View" onPress={() => this.props.navigation.navigate('SinglePostScreen', { friend_id : item.user_id, post_id: item.post_id })} />
+                        <Text style={styles.postText}>{item.text}</Text>
+                        <View style={styles.fixToText}>
+                        <Button color="#B39CD0" title="Like" onPress={() => this.getLike(item.post_id)} />
+                        <Button color="#B39CD0" title="Remove Like" onPress={() => this.getRemoveLike(item.post_id)} />
+                        {/* <Button color="#B39CD0" title="View" onPress={() => this.props.navigation.navigate('SinglePostScreen', { friend_id : item.user_id, post_id: item.post_id })} /> */}
+                    </View>
+                    </View>
                     </View>
               )}
             />
@@ -184,3 +189,30 @@ class FeedScreen extends Component {
 }
 
 export default FeedScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  scrollView: {
+    backgroundColor: 'transparent',
+    marginHorizontal: 15,
+  },
+  fixToText: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  postText: {
+    textAlign: 'center',
+  },
+  postBox: {
+    borderRadius: 15,
+    padding: 5,
+    borderWidth: 1,
+    margin: 5,
+  },
+  
+});

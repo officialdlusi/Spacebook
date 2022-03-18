@@ -211,7 +211,7 @@ class PostScreen extends Component {
               borderRadius: 4, padding: 5, borderWidth: 1, margin: 5,
             }}
           />
-          <Button title="Post" onPress={() => this.getSendPost()} />
+          <Button color="#B39CD0" title="Post" onPress={() => this.getSendPost()} />
           {/* <Button title = "Delete" onPress={() => this.getDeletePost()}/> */}
           <FlatList
             data={this.state.postData}
@@ -228,9 +228,9 @@ class PostScreen extends Component {
                       }}
                     />
                     <View style={styles.fixToText}>
-                      <Button title="View" onPress={() => this.props.navigation.navigate('SinglePostScreen', { post_id: item.post_id })} />
-                      <Button title="Delete" onPress={() => this.getDeletePost(item.post_id)} />
-                      <Button title="Update" onPress={() => this.getUpdatePost(item.post_id, this.state.text)} />
+                      <Button color="#B39CD0" title="View" onPress={() => this.props.navigation.navigate('SinglePostScreen', { post_id: item.post_id })} />
+                      <Button color="#B39CD0" title="Delete" onPress={() => this.getDeletePost(item.post_id)} />
+                      <Button color="#B39CD0" title="Update" onPress={() => this.getUpdatePost(item.post_id, this.state.text)} />
                     </View>
                   </View>
                 </View>

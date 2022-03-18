@@ -131,7 +131,7 @@ class SearchScreen extends Component {
             borderRadius: 4, padding: 5, borderWidth: 1, margin: 5,
           }}
         />
-        <Button title="Search" onPress={() => this.getFindUsers()} />
+        <Button color="#B39CD0" title="Search" onPress={() => this.getFindUsers()} />
         <CheckBox
           onValueChange={() => this.setState({ checked: !this.state.checked })}
           value={this.state.checked}
@@ -147,7 +147,7 @@ class SearchScreen extends Component {
                 {item.user_familyname}
               </Text>
               {/* <Button title="View Profile" onPress={() => {navigation.navigate()}}/> */}
-              <Button title="Add Friend" onPress={() => this.getSendFriendRequest(item.user_id)} />
+              <Button color="#B39CD0" title="Add Friend" onPress={() => this.getSendFriendRequest(item.user_id)} />
             </View>
           )}
           keyExtractor={(item) => item.user_id.toString()}

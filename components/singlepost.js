@@ -1,3 +1,4 @@
+/* eslint-disable no-use-before-define */
 /* eslint-disable react/jsx-filename-extension */
 /* eslint-disable no-throw-literal */
 /* eslint-disable consistent-return */
@@ -7,7 +8,7 @@
 /* eslint-disable react/no-unused-state */
 import React, { Component } from 'react';
 import {
-  View, Text,
+  View, Text, StyleSheet,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -79,7 +80,7 @@ class SinglePostScreen extends Component {
       );
     }
     return (
-      <View>
+      <View style={styles.postBox}>
         <Text>{this.state.singlePostData.text}</Text>
       </View>
     );
@@ -87,3 +88,14 @@ class SinglePostScreen extends Component {
 }
 
 export default SinglePostScreen;
+
+const styles = StyleSheet.create({
+  postBox: {
+    borderRadius: 15,
+    padding: 5,
+    borderWidth: 1,
+    margin: 5,
+    textAlign: 'center',
+  },
+
+});

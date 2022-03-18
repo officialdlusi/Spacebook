@@ -29,34 +29,6 @@ class LoginScreen extends Component {
 
   login = async () =>
 
-  // const emailRegex =
-  // eslint-disable-next-line max-len
-  //     /^(([^<>()[\]\.,;:\s@\"]+(\.[^<>()[\]\.,;:\s@\"]+)*)|(\".+\"))@(([^<>()[\]\.,;:\s@\"]+\.)+[^<>()[\]\.,;:\s@\"]{2,})$/i;
-
-  // const email = this.state.email;
-
-  // if (emailRegex.test(email)){
-  //     this.setState({"emailValdiation":true});
-  //     console.log("valid email address")
-  // } else {
-  //     console.log("invalid email address")
-  // }
-
-  // const {password} = this.state
-  // if(password.length > 5){
-  //     console.log("valid password")
-  //     this.setState({"passwordValdation":true})
-  // } else {
-  //     console.log("invalid password")
-  // }
-
-  // if(this.state.emailValdiation && this.state.passwordValdation){
-
-  //     let data = {
-  //         "email": this.state.email,
-  //         "password": this.state.password
-  //     }
-
     fetch('http://localhost:3333/api/1.0.0/login', {
       method: 'post',
       headers: {
@@ -82,9 +54,6 @@ class LoginScreen extends Component {
       .catch((error) => {
         this.setState({ error });
       })
-    // }else{
-    //     this.setState({"error": "Email or password not valid"})
-    // }
 
     ;
 
@@ -113,12 +82,12 @@ class LoginScreen extends Component {
         />
         <Button
           title="Login"
-          color="darkblue"
+          color="#B39CD0"
           onPress={() => this.login('Main')}
         />
         <Button
           title="Don't have an account?"
-          color="darkblue"
+          color="#B39CD0"
           onPress={() => this.props.navigation.navigate('Signup')}
         />
         <Text>{this.state.error}</Text>

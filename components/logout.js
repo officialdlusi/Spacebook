@@ -149,15 +149,17 @@ class LogoutScreen extends Component {
         />
         <Button
           title="Update Details"
+          color="#B39CD0"
           onPress={() => this.updateProfile()}
         />
         <Button
           title="Logout"
+          color="#B39CD0"
           onPress={() => this.logout()}
         />
         <Button
           title="Back to Profile"
-          color="darkblue"
+          color="#B39CD0"
           onPress={() => this.props.navigation.navigate('Profile')}
         />
 

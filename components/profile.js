@@ -154,7 +154,7 @@ class ProfileScreen extends Component {
           {`${profile.first_name} `}
           {profile.last_name}
         </Text>
-        <Button title="Update Profile Picture" onPress={() => this.props.navigation.navigate('Camera')} />
+        <Button color="#B39CD0" title="Update Profile Picture" onPress={() => this.props.navigation.navigate('Camera')} />
         <FlatList
           data={this.state.profileData}
           renderItem={({ item }) => (

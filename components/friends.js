@@ -101,7 +101,7 @@ class FriendsScreen extends Component {
                 {' '}
                 {item.user_familyname}
               </Text>
-              <Button title="View Friends Posts" onPress={() => this.props.navigation.navigate('FeedScreen', { user_id: item.user_id })} />
+              <Button color="#B39CD0" title="View Friends Posts" onPress={() => this.props.navigation.navigate('FeedScreen', { user_id: item.user_id })} />
             </View>
           )}
           keyExtractor={(item) => item.user_id.toString()}

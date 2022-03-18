@@ -40,8 +40,8 @@ class Main extends Component {
           },
         })}
         tabBarOptions={{
-          activeTintColor: 'black',
-          inactiveTintColor: 'grey',
+          activeTintColor: '#B39CD0',
+          inactiveTintColor: '#00C9A7',
         }}
       >
         <Tab.Screen name="ProfileScreen" options={{ headerShown: false }} component={ProfileScreen} />
