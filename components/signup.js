@@ -123,6 +123,10 @@ class SignupScreen extends Component {
                     style={{ padding: 5, borderWidth: 1, margin: 5 }}
                 />
                 <Button
+                    title = "Return to Sign In Screen"
+                    onPress={() => this.props.navigation.navigate("Login")}
+                    />
+                <Button
                     title="Create an account"
                     color="darkblue"
                     onPress={() => this.signup()}

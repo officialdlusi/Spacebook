@@ -1,5 +1,12 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable no-return-assign */
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable class-methods-use-this */
 import React, { Component } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native';
+import {
+  StyleSheet, Text, View, TouchableOpacity,
+} from 'react-native';
 import { Camera } from 'expo-camera';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -9,8 +16,8 @@ class CameraScreen extends Component {
 
     this.state = {
       hasPermission: null,
-      type: Camera.Constants.Type.back
-    }
+      type: Camera.Constants.Type.back,
+    };
   }
 
   async componentDidMount() {
@@ -24,35 +31,35 @@ class CameraScreen extends Component {
 
     const id = await AsyncStorage.getItem('@session_id');
 
-    let res = await fetch(data.base64);
-    let blob = await res.blob();
+    const res = await fetch(data.base64);
+    const blob = await res.blob();
 
-    return fetch("http://localhost:3333/api/1.0.0/user/" + id + "/photo", {
-      method: "post",
+    return fetch(`http://localhost:3333/api/1.0.0/user/${id}/photo`, {
+      method: 'post',
       headers: {
-        "Content-Type": "image/png",
-        "X-Authorization": token
+        'Content-Type': 'image/png',
+        'X-Authorization': token,
       },
-      body: blob
+      body: blob,
     })
       .then((response) => {
-        console.log("Picture added", response);
+        console.log('Picture added', response);
       })
       .catch((err) => {
         console.log(err);
-      })
-  }
+      });
+  };
 
   takePicture = async () => {
     if (this.camera) {
       const options = {
         quality: 0.5,
         base64: true,
-        onPictureSaved: (data) => this.getSendToServer(data)
+        onPictureSaved: (data) => this.getSendToServer(data),
       };
       await this.camera.takePictureAsync(options);
     }
-  }
+  };
 
   render() {
     if (this.state.hasPermission) {
@@ -61,25 +68,25 @@ class CameraScreen extends Component {
           <Camera
             style={styles.camera}
             type={this.state.type}
-            ref={ref => this.camera = ref}
+            ref={(ref) => this.camera = ref}
           >
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.button}
                 onPress={() => {
                   this.takePicture();
-                }}>
+                }}
+              >
                 <Text style={styles.text}> Take Photo </Text>
               </TouchableOpacity>
             </View>
           </Camera>
         </View>
       );
-    } else {
-      return (
-        <Text>No access to camera</Text>
-      );
     }
+    return (
+      <Text>No access to camera</Text>
+    );
   }
 }
 

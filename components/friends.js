@@ -1,7 +1,14 @@
+/* eslint-disable consistent-return */
+/* eslint-disable no-throw-literal */
+/* eslint-disable react/prop-types */
+/* eslint-disable no-use-before-define */
+/* eslint-disable react/destructuring-assignment */
+/* eslint-disable react/jsx-filename-extension */
 import React, { Component } from 'react';
-import { View, Text, FlatList, Button } from 'react-native';
+import {
+  View, Text, FlatList, Button, StyleSheet,
+} from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 class FriendsScreen extends Component {
   constructor(props) {
@@ -9,8 +16,8 @@ class FriendsScreen extends Component {
 
     this.state = {
       isLoading: true,
-      listData: []
-    }
+      listData: [],
+    };
   }
 
   async componentDidMount() {
@@ -22,7 +29,6 @@ class FriendsScreen extends Component {
 
     const id = await AsyncStorage.getItem('@session_id');
     this.getFriendsList(id);
-
   }
 
   componentWillUnmount() {
@@ -37,37 +43,37 @@ class FriendsScreen extends Component {
   };
 
   getFriendsList = async (id) => {
-    const value = await AsyncStorage.getItem('@session_token');
-    return fetch("http://localhost:3333/api/1.0.0/user/" + id + '/friends/', {
+    const token = await AsyncStorage.getItem('@session_token');
+    return fetch(`http://localhost:3333/api/1.0.0/user/${id}/friends/`, {
       method: 'get',
       headers: {
         'Content-Type': 'application/json',
-        'X-Authorization': value
-      }
+        'X-Authorization': token,
+      },
     })
       .then((response) => {
         if (response.status === 200) {
-          return response.json()
-        } else if (response.status === 401) {
+          return response.json();
+        } if (response.status === 401) {
           throw 'Unauthorised';
         } else if (response.status === 403) {
           throw 'Can only view the friends of yourself or your friends';
         } else if (response.status === 404) {
-          throw 'Not found'
+          throw 'Not found';
         } else if (response.status === 500) {
-          throw 'Error'
+          throw 'Error';
         }
       })
       .then((responseJson) => {
         this.setState({
           isLoading: false,
-          listData: responseJson
-        })
+          listData: responseJson,
+        });
       })
       .catch((error) => {
         console.log(error);
-      })
-  }
+      });
+  };
 
   render() {
     if (this.state.isLoading) {
@@ -78,33 +84,39 @@ class FriendsScreen extends Component {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-          }}>
+          }}
+        >
           <Text>Loading..</Text>
         </View>
       );
-    } else {
-      return (
-        <View>
-          <FlatList
-            data={this.state.listData}
-            renderItem={({ item }) => (
-              <View>
-                {/* <Text>{JSON.stringify(item)}</Text> */}
-                <Text>{item.user_givenname} {item.user_familyname}</Text>
-              <Button title="View Friends Posts" onPress={() => this.props.navigation.navigate('FeedScreen',  {user_id: item.user_id}   )} />
-              
-                {/* <Button title="View Friends Posts" onPress={() => this.props.navigation.navigate("FriendsMain", { screen: 'FeedScreen', "id" : item.user_id})} /> */}
-                {/* ("Feed", { "friend_id": item.user_id }) */}
-              </View>
-            )}
-            keyExtractor={(item, index) => item.user_id.toString()}
-          />
-        </View>
-      );
     }
-
+    return (
+      <View>
+        <FlatList
+          data={this.state.listData}
+          renderItem={({ item }) => (
+            <View style={styles.friendsScreen}>
+              <Text>
+                {item.user_givenname}
+                {' '}
+                {item.user_familyname}
+              </Text>
+              <Button title="View Friends Posts" onPress={() => this.props.navigation.navigate('FeedScreen', { user_id: item.user_id })} />
+            </View>
+          )}
+          keyExtractor={(item) => item.user_id.toString()}
+        />
+      </View>
+    );
   }
 }
 
-
 export default FriendsScreen;
+
+const styles = StyleSheet.create({
+  friendsScreen: {
+    textAlign: 'center',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+});

@@ -1,7 +1,12 @@
+/* eslint-disable no-console */
+/* eslint-disable consistent-return */
+/* eslint-disable no-throw-literal */
+/* eslint-disable react/jsx-filename-extension */
+/* eslint-disable react/prop-types */
+/* eslint-disable react/destructuring-assignment */
 import React, { Component } from 'react';
 import { View, Text, FlatList } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
 
 class HomeScreen extends Component {
   constructor(props) {
@@ -9,8 +14,8 @@ class HomeScreen extends Component {
 
     this.state = {
       isLoading: true,
-      listData: []
-    }
+      listData: [],
+    };
   }
 
   componentDidMount() {
@@ -27,16 +32,16 @@ class HomeScreen extends Component {
 
   getData = async () => {
     const value = await AsyncStorage.getItem('@session_token');
-    return fetch("http://localhost:3333/api/1.0.0/search", {
-      'headers': {
-        'X-Authorization': value
-      }
+    return fetch('http://localhost:3333/api/1.0.0/search', {
+      headers: {
+        'X-Authorization': value,
+      },
     })
       .then((response) => {
         if (response.status === 200) {
-          return response.json()
-        } else if (response.status === 401) {
-          this.props.navigation.navigate("Login");
+          return response.json();
+        } if (response.status === 401) {
+          this.props.navigation.navigate('Login');
         } else {
           throw 'Something went wrong';
         }
@@ -44,13 +49,13 @@ class HomeScreen extends Component {
       .then((responseJson) => {
         this.setState({
           isLoading: false,
-          listData: responseJson
-        })
+          listData: responseJson,
+        });
       })
       .catch((error) => {
         console.log(error);
-      })
-  }
+      });
+  };
 
   checkLoggedIn = async () => {
     const value = await AsyncStorage.getItem('@session_token');
@@ -60,7 +65,6 @@ class HomeScreen extends Component {
   };
 
   render() {
-
     if (this.state.isLoading) {
       return (
         <View
@@ -69,29 +73,30 @@ class HomeScreen extends Component {
             flexDirection: 'column',
             justifyContent: 'center',
             alignItems: 'center',
-          }}>
+          }}
+        >
           <Text>Loading..</Text>
         </View>
       );
-    } else {
-      return (
-        <View>
-          <FlatList
-            data={this.state.listData}
-            renderItem={({ item }) => (
-              <View>
-                <Text>{item.user_givenname} {item.user_familyname}</Text>
-              </View>
-            )}
-            keyExtractor={(item, index) => item.user_id.toString()}
-          />
-        </View>
-      );
     }
-
+    return (
+      <View>
+        <FlatList
+          data={this.state.listData}
+          renderItem={({ item }) => (
+            <View>
+              <Text>
+                {item.user_givenname}
+                {' '}
+                {item.user_familyname}
+              </Text>
+            </View>
+          )}
+          keyExtractor={(item) => item.user_id.toString()}
+        />
+      </View>
+    );
   }
 }
-
-
 
 export default HomeScreen;
