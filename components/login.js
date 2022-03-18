@@ -1,3 +1,5 @@
+/* eslint-disable no-use-before-define */
+/* eslint-disable react/jsx-no-undef */
 /* eslint-disable no-console */
 /* eslint-disable semi-style */
 /* eslint-disable implicit-arrow-linebreak */
@@ -8,7 +10,7 @@
 /* eslint-disable react/jsx-filename-extension */
 import React, { Component } from 'react';
 import {
-  Button, ScrollView, TextInput, Text, StyleSheet,
+  Button, ScrollView, TextInput, Text, StyleSheet, View,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -89,8 +91,9 @@ class LoginScreen extends Component {
   render() {
     return (
       <ScrollView>
-
-        <Text>Welcome to Spacebook</Text>
+        <View style={styles.login}>
+          <Text>Welcome to Spacebook</Text>
+        </View>
         <TextInput
           placeholder="Enter your email..."
           onChangeText={(email) => this.setState({ email })}
